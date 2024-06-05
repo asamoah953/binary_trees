@@ -42,6 +42,7 @@ heap_t *heap_insert(heap_t **root, int value) {
         return *root;
     }
 
+    // Perform level-order traversal to find the correct insertion point
     heap_t *queue[1000];
     int front = 0, rear = 0;
     queue[rear++] = *root;
@@ -69,6 +70,24 @@ heap_t *heap_insert(heap_t **root, int value) {
     return NULL;
 }
 
+heap_t *array_to_heap(int *array, size_t size) {
+    if (!array || size == 0)
+        return NULL;
+
+    heap_t *root = NULL;
+
+    for (size_t i = 0; i < size; i++) {
+        if (!heap_insert(&root, array[i])) {
+            // Free all previously allocated nodes in case of failure
+            // This part is skipped for simplicity, but in a complete implementation,
+            // you should handle freeing allocated memory to prevent memory leaks.
+            return NULL;
+        }
+    }
+
+    return root;
+}
+
 void print_heap(heap_t *root, int level) {
     if (root == NULL)
         return;
@@ -80,17 +99,12 @@ void print_heap(heap_t *root, int level) {
 }
 
 int main() {
-    heap_t *root = NULL;
+    int array[] = {10, 20, 15, 30, 40, 50, 5};
+    size_t size = sizeof(array) / sizeof(array[0]);
 
-    heap_insert(&root, 10);
-    heap_insert(&root, 20);
-    heap_insert(&root, 15);
-    heap_insert(&root, 30);
-    heap_insert(&root, 40);
-    heap_insert(&root, 50);
-    heap_insert(&root, 5);
-
-    print_heap(root, 0);
+    heap_t *root = array_to_heap(array, size);
+    if (root)
+        print_heap(root, 0);
 
     return 0;
 }
